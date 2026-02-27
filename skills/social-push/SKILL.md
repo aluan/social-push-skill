@@ -11,8 +11,7 @@ allowed-tools: Bash(agent-browser:*), Bash(jq:*), Bash(osascript:*) ,Read
 你需要使用 bash 运行 agent-browser，并参考 references 中对应平台的 workflow，帮助用户将文章、图片上传到对应的社交平台上
 
 # Rules
-1. 必须使用 `--state ~/my-state.json` 参数，确保用户登录状态和历史记录被保留
-2. 必须使用 `--headed` 参数，确保浏览器对用户可见
+1. 使用 `agent-browser --auto-connect` 自动连接用户的浏览器
 3. 最终操作只能是**暂存草稿**，禁止自动点击"发布"按钮，由用户自行确认发布
 4. 每步操作后用 `agent-browser snapshot -i` 确认元素 ref，因为页面状态变化可能导致 ref 编号变化
 
@@ -38,19 +37,7 @@ allowed-tools: Bash(agent-browser:*), Bash(jq:*), Bash(osascript:*) ,Read
 3. 只有当启动浏览器，完整一步一步测试新的平台交互路径，确保每步操作正确
 4. 才能在 references 目录下创建新平台的 workflow 文件，并在下方 References 中添加链接
 
-# login
-## general login
-当遇到未登录的平台，尝试询问用户去网页登录，
-登录后保存状态，agent-browser state save ~/my-state.json 以便下次使用
 
-## special login
-有些网站不能直接使用 agent-browser 登录
-ms-playwright  Google Chrome for Testing.app
-open "path" --args --remote-debugging-port=9222
-sleep 2 && curl -s http://localhost:9222/json/version
-agent-browser connect "ws://localhost:9222/devtools/browser/xxx
-让用户手动登录
-agent-browser state save ~/my-state.json
 
 # References
 

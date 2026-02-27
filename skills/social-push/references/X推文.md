@@ -1,6 +1,6 @@
 ## 发布推文 workflow
 
-1. 打开 X 发布页面：`agent-browser --state ~/my-state.json --headed open "https://x.com/compose/post"`
+1. 打开 X 发布页面：`agent-browser --auto-connect open "https://x.com/compose/post"`
 2. 查看交互：`agent-browser snapshot -i`
 3. 输入推文内容：`agent-browser fill @e6 "{推文内容}"`
 4. （可选）上传图片：点击 @e9 "添加照片或视频"，或使用 `agent-browser upload @e10 "{图片路径}"`
