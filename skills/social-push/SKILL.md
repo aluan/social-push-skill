@@ -10,7 +10,7 @@ disable-model-invocation: false
 你需要使用 bash 运行 agent-browser，并参考 references 中对应平台的 workflow，帮助用户将文章、图片上传到对应的社交平台上
 
 # Rules
-1. 使用 `agent-browser --headed --profile /tmp/agent-profile open https://xiaohongshu.com` 打开浏览器，登录对应平台账号，并保持登录状态
+1. 使用 `agent-browser --headed --profile /tmp/agent-profile open {平台首页网址}` 打开浏览器（`--profile` 持久化 Cookie 与会话，实现跨次运行免重复登录）
 2. 先用 `agent-browser snapshot` 确认页面是否弹出登录页面，如果是登录页面，提示用户登录后再继续操作
 3. 严格按照 references 中对应平台的 workflow 进行操作，确保每一步操作正确无误
 <!-- 4. 每步操作后用 `agent-browser snapshot -i` 确认元素 ref，因为页面状态变化可能导致 ref 编号变化 -->
