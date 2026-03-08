@@ -46,7 +46,7 @@ echo "步骤 1: 打开小红书创作者平台..."
 agent-browser --headed --profile /tmp/agent-profile open "https://creator.xiaohongshu.com/publish/publish?source=official&from=tab_switch&target=article"
 
 # 等待页面加载
-sleep 2
+agent-browser wait --load networkidle
 
 # 2. 查看交互并提取"新的创作"按钮
 echo "步骤 2: 查看页面交互元素..."
@@ -84,7 +84,7 @@ echo "步骤 8: 粘贴内容..."
 agent-browser press "Meta+v"
 
 # 等待内容加载
-sleep 2
+agent-browser wait --load networkidle
 
 # 9. 一键排版
 echo "步骤 9: 一键排版..."
@@ -94,8 +94,7 @@ agent-browser click "@$FORMAT_BUTTON_REF"
 
 # 10. 选择模版风格并进入下一步
 echo "步骤 10: 准备进入发布设置..."
-sleep 5
-agent-browser snapshot -i > /tmp/xhs_snapshot.txt 2>&1
+agent-browser wait --load networkidle
 
 if [ -n "$TEMPLATE" ]; then
     echo "提示：模版风格 '$TEMPLATE' 需要手动选择（页面文字可能略有差异）"
@@ -104,7 +103,8 @@ if [ -n "$TEMPLATE" ]; then
     sleep 1
 fi
 
-# 点击"下一步"按钮
+# 11. 重新获取页面元素并点击"下一步"按钮
+agent-browser snapshot -i > /tmp/xhs_snapshot.txt 2>&1
 NEXT_BUTTON_REF=$(grep "button \"下一步\"" /tmp/xhs_snapshot.txt | head -1 | sed -n 's/.*\[ref=\(e[0-9]*\)\].*/\1/p')
 if [ -z "$NEXT_BUTTON_REF" ]; then
     echo "错误：无法找到'下一步'按钮"
@@ -114,7 +114,7 @@ agent-browser click "@$NEXT_BUTTON_REF"
 
 # 12. 查看发布设置页面
 echo "步骤 12: 查看发布设置页面..."
-sleep 1
+agent-browser wait --load networkidle
 
 # 13. 输入简介
 echo "步骤 13: 填写简介..."
@@ -135,6 +135,8 @@ fi
 
 # 15. 提取发布按钮
 echo "步骤 15: 准备发布选项..."
+# 等待页面稳定
+sleep 1
 agent-browser snapshot -i > /tmp/xhs_snapshot.txt 2>&1
 DRAFT_BUTTON_REF=$(grep "button \"暂存离开\"" /tmp/xhs_snapshot.txt | head -1 | sed -n 's/.*\[ref=\(e[0-9]*\)\].*/\1/p')
 PUBLISH_BUTTON_REF=$(grep "button \"发布\"" /tmp/xhs_snapshot.txt | head -1 | sed -n 's/.*\[ref=\(e[0-9]*\)\].*/\1/p')
@@ -146,29 +148,13 @@ echo "=== 发布选项 ==="
 if [[ "$ACTION" == "publish" ]]; then
     echo "自动发布模式：立即发布..."
     agent-browser click "@$PUBLISH_BUTTON_REF"
+    agent-browser wait --load networkidle
     echo "✓ 发布成功"
 elif [[ "$ACTION" == "draft" ]]; then
     echo "自动草稿模式：暂存草稿..."
     agent-browser click "@$DRAFT_BUTTON_REF"
+    agent-browser wait --load networkidle
     echo "✓ 已保存为草稿"
-else
-    echo "1) 暂存草稿并离开"
-    echo "2) 立即发布"
-    read -p "请选择操作 (1/2): " -n 1 -r
-    echo
-
-    if [[ $REPLY == "1" ]]; then
-        echo "暂存草稿..."
-        agent-browser click "@$DRAFT_BUTTON_REF"
-        echo "✓ 已保存为草稿"
-    elif [[ $REPLY == "2" ]]; then
-        echo "发布内容..."
-        agent-browser click "@$PUBLISH_BUTTON_REF"
-        echo "✓ 发布成功"
-    else
-        echo "无效选择，退出"
-        exit 1
-    fi
 fi
 
 echo ""

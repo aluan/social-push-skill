@@ -49,7 +49,10 @@ echo ""
 echo "步骤 1: 打开小红书创作者平台..."
 agent-browser --headed --profile /tmp/agent-profile open "https://creator.xiaohongshu.com/publish/publish?source=official&from=tab_switch&target=image"
 
-# 2. 查看交互并提取上传按钮
+# 等待页面加载
+agent-browser wait --load networkidle
+
+# 2. 查看交互并提取上传按��
 echo "步骤 2: 查看页面交互元素..."
 agent-browser snapshot -i > /tmp/xhs_snapshot.txt 2>&1
 UPLOAD_REF=$(grep -i 'Choose File\|上传图片\|upload' /tmp/xhs_snapshot.txt | head -1 | sed -n 's/.*\[ref=\(e[0-9]*\)\].*/\1/p')
@@ -63,7 +66,7 @@ echo "步骤 3: 上传图片..."
 agent-browser upload "@$UPLOAD_REF" "$IMAGE_PATH"
 
 # 等待上传完成
-sleep 2
+agent-browser wait --load networkidle
 
 # 4. 查看交互并提取标题输入框
 echo "步骤 4: 查看编辑页面..."
@@ -102,29 +105,14 @@ echo "=== 发布选项 ==="
 if [[ "$ACTION" == "publish" ]]; then
     echo "自动发布模式：立即发布..."
     agent-browser click "@$PUBLISH_BUTTON_REF"
+    # 等待发布完成
+    agent-browser wait --load networkidle
     echo "✓ 发布成功"
 elif [[ "$ACTION" == "draft" ]]; then
     echo "自动草稿模式：暂存草稿..."
     agent-browser click "@$DRAFT_BUTTON_REF"
+    agent-browser wait --load networkidle
     echo "✓ 已保存为草稿"
-else
-    echo "1) 暂存草稿并离开"
-    echo "2) 立即发布"
-    read -p "请选择操作 (1/2): " -n 1 -r
-    echo
-
-    if [[ $REPLY == "1" ]]; then
-        echo "暂存草稿..."
-        agent-browser click "@$DRAFT_BUTTON_REF"
-        echo "✓ 已保存为草稿"
-    elif [[ $REPLY == "2" ]]; then
-        echo "发布内容..."
-        agent-browser click "@$PUBLISH_BUTTON_REF"
-        echo "✓ 发布成功"
-    else
-        echo "无效选择，退出"
-        exit 1
-    fi
 fi
 
 echo ""

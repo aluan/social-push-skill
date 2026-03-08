@@ -9,7 +9,7 @@ if [ $# -lt 1 ]; then
     echo "Usage: $0 <内容> [图片路径] [话题] [操作]"
     echo "Example: $0 '今天天气真好' /path/to/image.jpg '生活记录' publish"
     echo ""
-    echo "注意：普通用户字数限制 140 字，会员 2000 字"
+    echo "注意：支持发布长文本，无字数限制"
     echo ""
     echo "操作选项："
     echo "  skip    - 不发布，保留内容（默认）"
@@ -28,12 +28,6 @@ if [ -n "$IMAGE_PATH" ] && [ ! -f "$IMAGE_PATH" ]; then
     exit 1
 fi
 
-# 检查字数
-CONTENT_LENGTH=${#CONTENT}
-if [ $CONTENT_LENGTH -gt 140 ]; then
-    echo "警告：内容长度为 $CONTENT_LENGTH 字，超过普通用户 140 字限制（会员 2000 字）"
-fi
-
 echo "=== 微博发布流程 ==="
 echo "内容: $CONTENT"
 [ -n "$IMAGE_PATH" ] && echo "图片: $IMAGE_PATH"
@@ -43,7 +37,7 @@ echo ""
 # 1. 打开微博主页
 echo "步骤 1: 打开微博..."
 agent-browser --headed --profile /tmp/agent-profile open "https://weibo.com"
-sleep 3
+agent-browser wait --load networkidle
 
 # 2. 检测是否需要登录
 agent-browser snapshot -i > /tmp/weibo_snapshot.txt 2>&1
@@ -77,7 +71,7 @@ fi
 if [ -n "$IMAGE_PATH" ]; then
     echo "步骤 6: 上传图片..."
     agent-browser upload "input[type='file']" "$IMAGE_PATH"
-    sleep 2
+    agent-browser wait --load networkidle
 fi
 
 # 7. 提取发布按钮
