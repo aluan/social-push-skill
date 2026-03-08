@@ -46,26 +46,16 @@ more and more...
 
 ## 📦 安装
 
-tips: 直接将下面内容复制给 claude code 执行即可安装
+把以下内容直接发给 Claude Code，让它帮你完成安装：
 
-### 前置依赖
-
-1. 安装 Claude Code
-2. 安装 agent-browser 和 Chromium 浏览器
-```bash
-npm install -g agent-browser # agent-browser CLI tool
-npx skills add https://github.com/vercel-labs/agent-browser --skill agent-browser # 安装 agent-browser skill
-agent-browser install  # Download Chromium
+```
+帮我安装这个 skill：https://github.com/aluan/social-push-skill
 ```
 
-### 安装 Skill
-
-推荐使用 npx 安装：
-```bash
-npx skills add jihe520/social-push
-```
-
-或手动复制 `.claude/skills/social-push` 目录到你的项目中。
+Claude Code 会自动执行以下步骤：
+1. 安装 agent-browser CLI 工具
+2. 下载 Chromium 浏览器
+3. 安装 social-push skill
 
 ## 🚀 使用方法
 

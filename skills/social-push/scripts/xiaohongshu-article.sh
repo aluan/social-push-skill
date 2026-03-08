@@ -15,12 +15,12 @@ if [ $# -lt 3 ]; then
     echo "  平实叙事、交叉拓扑、拼接色块、线条复古"
     echo ""
     echo "发布动作："
-    echo "  draft   - 保存草稿（默认）"
-    echo "  publish - 立即发布"
+    echo "  publish - 立即发布（默认）"
+    echo "  draft   - 保存草稿"
     echo ""
     echo "原创声明："
-    echo "  true  - 声明原创"
-    echo "  false - 不声明（默认）"
+    echo "  true  - 声明原创（默认）"
+    echo "  false - 不声明"
     exit 1
 fi
 
@@ -29,8 +29,8 @@ TITLE="$2"
 DESCRIPTION="$3"
 TOPIC="${4:-}"
 TEMPLATE="${5:-}"
-ACTION="${6:-draft}"
-ORIGINAL="${7:-false}"
+ACTION="${6:-publish}"
+ORIGINAL="${7:-true}"
 
 # 检查文件是否存在
 if [ ! -f "$FILE_PATH" ]; then

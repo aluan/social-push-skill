@@ -16,7 +16,7 @@ disable-model-invocation: false
 4. 脚本执行失败时，查看错误信息并根据 references 中的 workflow 进行调试
 
 # Core Workflow
-1. 确认发布信息 调用 AskUserQuestion tool：目标平台（还是**添加新平台**）、内容类型、内容来源（文件路径/直接输入/ai 创作）、标题、话题标签
+1. 确认发布信息 调用 AskUserQuestion tool：目标平台（小红书、微博、微信公众号）、内容类型、内容来源（文件路径/直接输入/ai 创作）、标题、话题标签
 2. 检查 scripts 目录是否有对应平台的自动化脚本
 3. 如果有脚本，直接调用脚本并传入参数
 4. 如果没有脚本，读取 references 中对应平台的 workflow，使用 agent-browser 逐步执行
@@ -33,27 +33,17 @@ disable-model-invocation: false
    - 如果有对应的脚本，编辑 scripts 目录下的脚本文件
    - 如果没有脚本，编辑 references 目录下的 workflow 文件
 
-## 添加新的社交平台
-当用户询问需要新添加一个平台时候，按以下步骤添加：
-1. 参考 references 下已有的 workflow 作为模板
-2. 用 `agent-browser --help` 查看可用命令 和 agent-browser 的 skill
-3. 启动浏览器，完整一步一步测试新的平台交互路径，确保每步操作正确
-4. 在 references 目录下创建新平台的 workflow 文件
-5. （可选）基于 workflow 创建自动化脚本，放在 scripts 目录下
-6. 在下方 References 中添加链接
-
-
 
 # References
 
 ## 小红书
 - **脚本**: [xiaohongshu-image.sh](./scripts/xiaohongshu-image.sh) - 图文发布自动化脚本
   - 用法: `./scripts/xiaohongshu-image.sh <图片路径> <标题> <正文内容> [话题] [发布动作]`
-  - 发布动作: `publish` 立即发布, `draft` 保存草稿（默认）
+  - 发布动作: `publish` 立即发布（默认）, `draft` 保存草稿
 - **脚本**: [xiaohongshu-article.sh](./scripts/xiaohongshu-article.sh) - 长文发布自动化脚本
   - 用法: `./scripts/xiaohongshu-article.sh <文件路径> <标题> <简介> [话题] [模版风格] [发布动作] [原创声明]`
-  - 发布动作: `publish` 立即发布, `draft` 保存草稿（默认）
-  - 原创声明: `true` 声明原创, `false` 不声明（默认）
+  - 发布动作: `publish` 立即发布（默认）, `draft` 保存草稿
+  - 原创声明: `true` 声明原创（默认）, `false` 不声明
 - **参考**: [小红书图文](./references/小红书图文.md) - 图文发布 workflow（用于调试）
 - **参考**: [小红书长文](./references/小红书长文.md) - 长文发布 workflow（用于调试）
 

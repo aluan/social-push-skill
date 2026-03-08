@@ -10,8 +10,8 @@ if [ $# -lt 3 ]; then
     echo "Example: $0 /path/to/image.jpg '我的标题' '这是正文内容' '生活分享' 'publish'"
     echo ""
     echo "发布动作："
-    echo "  draft   - 保存草稿（默认）"
-    echo "  publish - 立即发布"
+    echo "  publish - 立即发布（默认）"
+    echo "  draft   - 保存草稿"
     exit 1
 fi
 
@@ -19,7 +19,7 @@ IMAGE_PATH="$1"
 TITLE="$2"
 CONTENT="$3"
 TOPIC="${4:-}"
-ACTION="${5:-draft}"
+ACTION="${5:-publish}"
 
 # 检查标题长度
 TITLE_LENGTH=${#TITLE}
