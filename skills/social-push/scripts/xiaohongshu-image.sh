@@ -1,13 +1,17 @@
 #!/bin/bash
 # 小红书图文发布脚本
-# Usage: ./xiaohongshu-image.sh <图片路径> <标题> <正文内容> [话题]
+# Usage: ./xiaohongshu-image.sh <图片路径> <标题> <正文内容> [话题] [发布动作]
 
 set -e
 
 # 参数检查
 if [ $# -lt 3 ]; then
-    echo "Usage: $0 <图片路径> <标题> <正文内容> [话题]"
-    echo "Example: $0 /path/to/image.jpg '我的标题' '这是正文内容' '生活分享'"
+    echo "Usage: $0 <图片路径> <标题> <正文内容> [话题] [发布动作]"
+    echo "Example: $0 /path/to/image.jpg '我的标题' '这是正文内容' '生活分享' 'publish'"
+    echo ""
+    echo "发布动作："
+    echo "  draft   - 保存草稿（默认）"
+    echo "  publish - 立即发布"
     exit 1
 fi
 
@@ -15,6 +19,7 @@ IMAGE_PATH="$1"
 TITLE="$2"
 CONTENT="$3"
 TOPIC="${4:-}"
+ACTION="${5:-draft}"
 
 # 检查标题长度
 TITLE_LENGTH=${#TITLE}
@@ -90,25 +95,36 @@ agent-browser snapshot -i > /tmp/xhs_snapshot.txt 2>&1
 DRAFT_BUTTON_REF=$(grep "button \"暂存离开\"" /tmp/xhs_snapshot.txt | head -1 | sed -n 's/.*\[ref=\(e[0-9]*\)\].*/\1/p')
 PUBLISH_BUTTON_REF=$(grep "button \"发布\"" /tmp/xhs_snapshot.txt | head -1 | sed -n 's/.*\[ref=\(e[0-9]*\)\].*/\1/p')
 
-# 9. 最后一步：询问用户操作
+# 9. 最后一步：根据参数自动执行或询问用户
 echo ""
 echo "=== 发布选项 ==="
-echo "1) 暂存草稿并离开"
-echo "2) 立即发布"
-read -p "请选择操作 (1/2): " -n 1 -r
-echo
 
-if [[ $REPLY == "1" ]]; then
-    echo "暂存草稿..."
-    agent-browser click "@$DRAFT_BUTTON_REF"
-    echo "✓ 已保存为草稿"
-elif [[ $REPLY == "2" ]]; then
-    echo "发布内容..."
+if [[ "$ACTION" == "publish" ]]; then
+    echo "自动发布模式：立即发布..."
     agent-browser click "@$PUBLISH_BUTTON_REF"
     echo "✓ 发布成功"
+elif [[ "$ACTION" == "draft" ]]; then
+    echo "自动草稿模式：暂存草稿..."
+    agent-browser click "@$DRAFT_BUTTON_REF"
+    echo "✓ 已保存为草稿"
 else
-    echo "无效选择，退出"
-    exit 1
+    echo "1) 暂存草稿并离开"
+    echo "2) 立即发布"
+    read -p "请选择操作 (1/2): " -n 1 -r
+    echo
+
+    if [[ $REPLY == "1" ]]; then
+        echo "暂存草稿..."
+        agent-browser click "@$DRAFT_BUTTON_REF"
+        echo "✓ 已保存为草稿"
+    elif [[ $REPLY == "2" ]]; then
+        echo "发布内容..."
+        agent-browser click "@$PUBLISH_BUTTON_REF"
+        echo "✓ 发布成功"
+    else
+        echo "无效选择，退出"
+        exit 1
+    fi
 fi
 
 echo ""

@@ -48,9 +48,11 @@ disable-model-invocation: false
 
 ## 小红书
 - **脚本**: [xiaohongshu-image.sh](./scripts/xiaohongshu-image.sh) - 图文发布自动化脚本
-  - 用法: `./scripts/xiaohongshu-image.sh <图片路径> <标题> <正文内容> [话题]`
+  - 用法: `./scripts/xiaohongshu-image.sh <图片路径> <标题> <正文内容> [话题] [发布动作]`
+  - 发布动作: `publish` 立即发布, `draft` 保存草稿（默认）
 - **脚本**: [xiaohongshu-article.sh](./scripts/xiaohongshu-article.sh) - 长文发布自动化脚本
-  - 用法: `./scripts/xiaohongshu-article.sh <文件路径> <标题> <简介> [话题] [模版风格]`
+  - 用法: `./scripts/xiaohongshu-article.sh <文件路径> <标题> <简介> [话题] [模版风格] [发布动作]`
+  - 发布动作: `publish` 立即发布, `draft` 保存草稿（默认）
 - **参考**: [小红书图文](./references/小红书图文.md) - 图文发布 workflow（用于调试）
 - **参考**: [小红书长文](./references/小红书长文.md) - 长文发布 workflow（用于调试）
 
