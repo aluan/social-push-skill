@@ -60,6 +60,6 @@ metadata:
 
 ## 微信公众号
 - **脚本**: [weixin-article.sh](./scripts/weixin-article.sh) - 公众号文章发布自动化脚本
-  - 用法: `./scripts/weixin-article.sh <标题> <内容> <封面图片路径> <摘要> [发布动作]`
+  - 用法: `./scripts/weixin-article.sh <标题> <内容> [封面图片路径] [发布动作]`
   - 发布动作: `draft` 保存草稿（默认）, `publish` 立即发布
 - **参考**: [微信公众号文章](./references/微信公众号文章.md) - 公众号文章发布 workflow（用于调试）
