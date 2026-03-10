@@ -201,6 +201,24 @@ if [[ "$ACTION" == "publish" ]]; then
         [ -z "$BTN_REF" ] && break
         agent-browser click "@$BTN_REF"
     done
+    # 兜底：若仍有确认弹窗（常见“发表/确认/确定”），继续点掉
+    for i in 1 2; do
+        sleep 2
+        agent-browser snapshot -i > /tmp/wx_snapshot.txt 2>&1
+        # 没有“取消”按钮，通常表示无弹窗
+        if ! grep -q 'button "取消"' /tmp/wx_snapshot.txt; then
+            # 若也不存在继续/确认类按钮，则退出
+            if ! grep -q 'button "继续发表"\|button "发表".*nth=1\|button "确认"\|button "确定"' /tmp/wx_snapshot.txt; then
+                break
+            fi
+        fi
+        BTN_REF=$(grep 'button "继续发表"' /tmp/wx_snapshot.txt | head -1 | sed -n 's/.*\[ref=\(e[0-9]*\)\].*/\1/p')
+        [ -z "$BTN_REF" ] && BTN_REF=$(grep 'button "发表"' /tmp/wx_snapshot.txt | grep 'nth=1' | head -1 | sed -n 's/.*\[ref=\(e[0-9]*\)\].*/\1/p')
+        [ -z "$BTN_REF" ] && BTN_REF=$(grep 'button "确认"' /tmp/wx_snapshot.txt | head -1 | sed -n 's/.*\[ref=\(e[0-9]*\)\].*/\1/p')
+        [ -z "$BTN_REF" ] && BTN_REF=$(grep 'button "确定"' /tmp/wx_snapshot.txt | head -1 | sed -n 's/.*\[ref=\(e[0-9]*\)\].*/\1/p')
+        [ -z "$BTN_REF" ] && break
+        agent-browser click "@$BTN_REF"
+    done
     echo "✓ 发表成功"
 else
     echo "保存草稿..."
